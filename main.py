@@ -17,7 +17,7 @@ app.config['SECRET_KEY'] = "Your secret key"
 # app.config['SECRET_KEY'] = os.environ.get('secret_key')
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://flourishing_emails_user:y6SiCT8NeRTcENoawL8VbGVJVmhglMbE@dpg-ckjgr6j6fquc7398tg6g-a/flourishing_emails"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("flourishing_db")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # os.environ.get("flourishing_db")
