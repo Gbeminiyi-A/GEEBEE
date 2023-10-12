@@ -34,8 +34,7 @@ with app.app_context():
     db.create_all()
 
 email = "hello@yourflourishlife.com"
-password = "FloRich1!"
-# password = os.environ.get("flourishemailpassword")
+password = os.environ.get("flourishemailpassword")
 context = ssl.create_default_context()
 
 msg = MIMEMultipart()
