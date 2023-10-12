@@ -1,2 +1,4 @@
 Flask
 Flask-Sqlalchemy
+gunicorn
+psycopg2-binary
