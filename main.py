@@ -10,14 +10,16 @@ from flask_sqlalchemy import SQLAlchemy
 
 year = datetime.datetime.today().year
 
+
 app = Flask(__name__)
 
-# app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
 app.config['SECRET_KEY'] = "Your secret key"
 # app.config['SECRET_KEY'] = os.environ.get('secret_key')
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("flourishing_db")
+# app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("flourishing_db")
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///emails.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # os.environ.get("flourishing_db")
@@ -34,7 +36,8 @@ with app.app_context():
     db.create_all()
 
 email = "hello@yourflourishlife.com"
-password = os.environ.get("flourishemailpassword")
+# password = os.environ.get("flourishemailpassword")
+password = "FloRich1!"
 context = ssl.create_default_context()
 
 msg = MIMEMultipart()
@@ -60,6 +63,17 @@ host = "mail.privateemail.com"
 text = msg.as_string()
 
 
+def send_email(email_to_subscribe):
+    with smtplib.SMTP_SSL(host, 465, context=context) as connection:
+        connection.ehlo()
+        connection.login(email, password)
+        connection.sendmail(
+            from_addr=email,
+            to_addrs=f"{email_to_subscribe}",
+            msg=text,
+        )
+
+
 @app.route("/", methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
@@ -75,14 +89,7 @@ def home():
                 )
                 db.session.add(email_to_add)
                 db.session.commit()
-                with smtplib.SMTP_SSL(host, 465, context=context) as connection:
-                    connection.ehlo()
-                    connection.login(email, password)
-                    connection.sendmail(
-                        from_addr=email,
-                        to_addrs=f"{email_to_subscribe}",
-                        msg=text,
-                    )
+                send_email(email_to_subscribe)
     return render_template("index.html", year=year)
 
 
