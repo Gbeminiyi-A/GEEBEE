@@ -1,11 +1,11 @@
-from flask import Flask, render_template, request, flash, redirect, url_for
 import datetime
-import ssl, smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
+import smtplib
+import ssl
 from email import encoders
-import os
+from email.mime.base import MIMEBase
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
 year = datetime.datetime.today().year
@@ -118,7 +118,8 @@ def contact():
                 connection.sendmail(
                     from_addr=email,
                     to_addrs=email,
-                    msg=f"Subject:Email from {request.form.get('name')}\n\n{request.form.get('name')}, {request.form.get('contact-email')}, sent you this message:"
+                    msg=f"Subject:Email from {request.form.get('name')}\n\n{request.form.get('name')}, "
+                        f"{request.form.get('contact-email')}, sent you this message:"
                         f" {request.form.get('message')}"
                 )
     if request.method == 'POST':
