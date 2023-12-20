@@ -63,85 +63,47 @@ host = "mail.privateemail.com"
 text = msg.as_string()
 
 
-def send_email(email_to_subscribe):
-    with smtplib.SMTP_SSL(host, 465, context=context) as connection:
-        connection.ehlo()
-        connection.login(email, password)
-        connection.sendmail(
-            from_addr=email,
-            to_addrs=f"{email_to_subscribe}",
-            msg=text,
-        )
+def check_and_send_email():
+    email_to_subscribe = request.form.get('email')
+    if len(email_to_subscribe) > 0:
+        email_to_add = User.query.filter_by(email=email_to_subscribe).first()
+        if email_to_add:
+            flash("You've already subscribed!")
+            return redirect(url_for('home'))
+        else:
+            email_to_add = User(
+                email=email_to_subscribe
+            )
+            db.session.add(email_to_add)
+            db.session.commit()
+            with smtplib.SMTP_SSL(host, 465, context=context) as connection:
+                connection.ehlo()
+                connection.login(email, password)
+                connection.sendmail(
+                    from_addr=email,
+                    to_addrs=f"{email_to_subscribe}",
+                    msg=text,
+                )
 
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
-        email_to_subscribe = request.form.get('email')
-        if len(email_to_subscribe) > 0:
-            email_to_add = User.query.filter_by(email=email_to_subscribe).first()
-            if email_to_add:
-                flash("You've already subscribed!")
-                return redirect(url_for('home'))
-            else:
-                email_to_add = User(
-                    email=email_to_subscribe
-                )
-                db.session.add(email_to_add)
-                db.session.commit()
-                send_email(email_to_subscribe)
+        check_and_send_email()
     return render_template("index.html", year=year)
 
 
 @app.route("/about-me", methods=['GET', 'POST'])
 def about():
     if request.method == 'POST':
-        email_to_subscribe = request.form.get('email')
-        if len(email_to_subscribe) > 0:
-            email_to_add = User.query.filter_by(email=email_to_subscribe).first()
-            if email_to_add:
-                flash("You've already subscribed!")
-                return redirect(url_for('home'))
-            else:
-                email_to_add = User(
-                    email=email_to_subscribe
-                )
-                db.session.add(email_to_add)
-                db.session.commit()
-                with smtplib.SMTP_SSL(host, 465, context=context) as connection:
-                    connection.ehlo()
-                    connection.login(email, password)
-                    connection.sendmail(
-                        from_addr=email,
-                        to_addrs=f"{email_to_subscribe}",
-                        msg=text,
-                    )
+        check_and_send_email()
     return render_template('about.html', year=year)
 
 
 @app.route("/courses", methods=['GET', 'POST'])
 def courses():
     if request.method == 'POST':
-        email_to_subscribe = request.form.get('email')
-        if len(email_to_subscribe) > 0:
-            email_to_add = User.query.filter_by(email=email_to_subscribe).first()
-            if email_to_add:
-                flash("You've already subscribed!")
-                return redirect(url_for('home'))
-            else:
-                email_to_add = User(
-                    email=email_to_subscribe
-                )
-                db.session.add(email_to_add)
-                db.session.commit()
-                with smtplib.SMTP_SSL(host, 465, context=context) as connection:
-                    connection.ehlo()
-                    connection.login(email, password)
-                    connection.sendmail(
-                        from_addr=email,
-                        to_addrs=f"{email_to_subscribe}",
-                        msg=text,
-                    )
+        check_and_send_email()
     return render_template('courses.html', year=year)
 
 
