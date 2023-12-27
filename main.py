@@ -19,8 +19,7 @@ app.config['SECRET_KEY'] = "Your secret key"
 # app.config['SECRET_KEY'] = os.environ.get('secret_key')
 
 
-# app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("flourishing_db")
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///emails.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("flourishing_db")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # os.environ.get("flourishing_db")
@@ -37,8 +36,7 @@ with app.app_context():
     db.create_all()
 
 email = "hello@yourflourishlife.com"
-# password = os.environ.get("flourishemailpassword")
-password = "FloRich1!"
+password = os.environ.get("flourishemailpassword")
 context = ssl.create_default_context()
 
 msg = MIMEMultipart()
